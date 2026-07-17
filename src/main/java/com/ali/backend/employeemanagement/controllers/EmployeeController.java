@@ -1,6 +1,8 @@
 package com.ali.backend.employeemanagement.controllers;
 
 import com.ali.backend.employeemanagement.abstracts.EmployeeService;
+import com.ali.backend.employeemanagement.dtos.EmployeeCreateDTO;
+import com.ali.backend.employeemanagement.dtos.EmployeeUpdateDTO;
 import com.ali.backend.employeemanagement.entities.Employee;
 import com.ali.backend.employeemanagement.exceptions.GlobalResponse;
 import jakarta.validation.Valid;
@@ -8,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,8 +24,8 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<GlobalResponse<ArrayList<Employee>>> findAll() {
-        ArrayList<Employee> employees = employeeService.findAll();
+    public ResponseEntity<GlobalResponse<List<Employee>>> findAll() {
+        List<Employee> employees = employeeService.findAll();
         return new ResponseEntity<>(new GlobalResponse<>(employees), HttpStatus.OK);
     }
 
@@ -36,14 +38,14 @@ public class EmployeeController {
     @PutMapping("/{employeeId}")
     public ResponseEntity<GlobalResponse<Employee>> updateOne(
             @PathVariable UUID employeeId,
-            @RequestBody @Valid Employee employee) {
+            @RequestBody @Valid EmployeeUpdateDTO employee) {
         Employee updatedEmployee = employeeService.updatedOne(employee, employeeId);
 
         return new ResponseEntity<>(new GlobalResponse<>(updatedEmployee), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<GlobalResponse<Employee>> createOne(@RequestBody @Valid Employee employee) {
+    public ResponseEntity<GlobalResponse<Employee>> createOne(@RequestBody @Valid EmployeeCreateDTO employee) {
         Employee newEmployee = employeeService.createOne(employee);
         return new ResponseEntity<>(new GlobalResponse<>(newEmployee), HttpStatus.CREATED);
     }

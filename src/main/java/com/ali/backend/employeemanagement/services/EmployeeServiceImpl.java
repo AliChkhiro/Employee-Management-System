@@ -1,68 +1,71 @@
 package com.ali.backend.employeemanagement.services;
 
 import com.ali.backend.employeemanagement.abstracts.EmployeeService;
+import com.ali.backend.employeemanagement.dtos.EmployeeCreateDTO;
+import com.ali.backend.employeemanagement.dtos.EmployeeUpdateDTO;
 import com.ali.backend.employeemanagement.entities.Employee;
 import com.ali.backend.employeemanagement.exceptions.CustomResponseException;
+import com.ali.backend.employeemanagement.repositories.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    ArrayList<Employee> employees = new ArrayList<>();
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Override
     public Employee findOne(UUID employeeId) {
-        Employee employee = employees.stream()
-                .filter(emp -> emp.getId().equals(employeeId))
-                .findFirst()
+        Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> CustomResponseException.resourceNotFound(
                         "Employee with id " + employeeId + " not found"));
         return employee;
     }
 
     @Override
-    public ArrayList<Employee> findAll() {
-        return employees;
+    public List<Employee> findAll() {
+        return employeeRepository.findAll();
     }
 
     @Override
     public void deleteOne(UUID employeeId) {
-        Optional<Employee> employee = employees.stream()
-                .filter(emp -> emp.getId().equals(employeeId))
-                .findFirst();
+        Optional<Employee> employee = employeeRepository.findById(employeeId);
 
-        employee.ifPresent(value -> employees.remove(value));
+        employee.ifPresent(value -> employeeRepository.deleteById(value.getId()));
     }
 
     @Override
-    public Employee updatedOne(Employee employee, UUID employeeId) {
-        Employee existingEmployee = employees.stream()
-                .filter(emp -> emp.getId().equals(employeeId))
-                .findFirst()
+    public Employee updatedOne(EmployeeUpdateDTO employee, UUID employeeId) {
+        Employee existingEmployee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> CustomResponseException.resourceNotFound(
                         "Employee with id " + employeeId + " not found"));
 
-        existingEmployee.setFirstName(employee.getFirstName());
-        existingEmployee.setLastName(employee.getLastName());
-        existingEmployee.setEmail(employee.getEmail());
-        existingEmployee.setPhoneNumber(employee.getPhoneNumber());
-        existingEmployee.setPosition(employee.getPosition());
-        existingEmployee.setHireDate(employee.getHireDate());
-        existingEmployee.setDepartmentId(existingEmployee.getDepartmentId());
+        existingEmployee.setFirstName(employee.firstName());
+        existingEmployee.setLastName(employee.lastName());
+        existingEmployee.setPhoneNumber(employee.phoneNumber());
+        existingEmployee.setPosition(employee.position());
+
+        employeeRepository.save(existingEmployee);
 
         return existingEmployee;
     }
 
     @Override
-    public Employee createOne(Employee employee) {
-        employee.setId(UUID.randomUUID());
-        employee.setDepartmentId(UUID.randomUUID());
-        employees.add(employee);
+    public Employee createOne(EmployeeCreateDTO employeeCreateDTO) {
+        Employee employee = new Employee();
+        employee.setFirstName(employeeCreateDTO.firstName());
+        employee.setLastName(employeeCreateDTO.lastName());
+        employee.setPosition(employeeCreateDTO.position());
+        employee.setEmail(employeeCreateDTO.email());
+        employee.setPhoneNumber(employeeCreateDTO.phoneNumber());
+        employee.setHireDate(employeeCreateDTO.hireDate());
 
+        employeeRepository.save(employee);
         return employee;
     }
 
