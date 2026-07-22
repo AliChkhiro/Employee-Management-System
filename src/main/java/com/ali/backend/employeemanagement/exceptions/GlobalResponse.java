@@ -9,7 +9,6 @@ public class GlobalResponse<T> {
 
     public final static String SUCCESS = "success";
     public final static String ERROR = "error";
-
     private final String status;
     private final T data;
     private final List<ErrorItem> errors;
