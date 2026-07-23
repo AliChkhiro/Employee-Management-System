@@ -3,6 +3,7 @@ package com.ali.backend.employeemanagement.dtos;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record EmployeeCreateDTO(
 
@@ -28,6 +29,9 @@ public record EmployeeCreateDTO(
 
         @NotNull(message = "Position is required")
         @Size(min = 2, max = 50, message = "min is 2 characters and max is 50 caracters")
-        String position
+        String position,
+
+        @NotNull(message = "department Id is required")
+        UUID departmentId
 ) {
 }

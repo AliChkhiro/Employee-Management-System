@@ -1,5 +1,6 @@
 package com.ali.backend.employeemanagement.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,7 +43,10 @@ public class Employee {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "department_id", nullable = false)
+    @JsonProperty("departmentId")
     private Department department;
 
-
+    public UUID getDepartment() {
+        return department.getId();
+    }
 }

@@ -3,8 +3,10 @@ package com.ali.backend.employeemanagement.services;
 import com.ali.backend.employeemanagement.abstracts.EmployeeService;
 import com.ali.backend.employeemanagement.dtos.EmployeeCreateDTO;
 import com.ali.backend.employeemanagement.dtos.EmployeeUpdateDTO;
+import com.ali.backend.employeemanagement.entities.Department;
 import com.ali.backend.employeemanagement.entities.Employee;
 import com.ali.backend.employeemanagement.exceptions.CustomResponseException;
+import com.ali.backend.employeemanagement.repositories.DepartmentRepository;
 import com.ali.backend.employeemanagement.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @Override
     public Employee findOne(UUID employeeId) {
@@ -58,12 +62,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee createOne(EmployeeCreateDTO employeeCreateDTO) {
         Employee employee = new Employee();
+
+        Department department = departmentRepository.findById(employeeCreateDTO.departmentId())
+                .orElseThrow(() -> CustomResponseException.resourceNotFound(
+                        "Department with id " + employeeCreateDTO.departmentId() + " not found"
+                ));
+
         employee.setFirstName(employeeCreateDTO.firstName());
         employee.setLastName(employeeCreateDTO.lastName());
         employee.setPosition(employeeCreateDTO.position());
         employee.setEmail(employeeCreateDTO.email());
         employee.setPhoneNumber(employeeCreateDTO.phoneNumber());
         employee.setHireDate(employeeCreateDTO.hireDate());
+        employee.setDepartment(department);
 
         employeeRepository.save(employee);
         return employee;
