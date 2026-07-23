@@ -8,10 +8,10 @@ import java.util.UUID;
 public record EmployeeCreateDTO(
 
         @NotNull(message = "First name is required")
-        @Size(min = 2, max = 50, message = "min is 2 characters and max is 50 caracters")
+        @Size(min = 2, max = 50, message = "min is 2 characters and max is 50 characters")
         String firstName,
 
-        @Size(min = 2, max = 50, message = "min is 2 characters and max is 50 caracters")
+        @Size(min = 2, max = 50, message = "min is 2 characters and max is 50 characters")
         @NotNull(message = "Last name is required")
         String lastName,
 
@@ -28,7 +28,7 @@ public record EmployeeCreateDTO(
         LocalDate hireDate,
 
         @NotNull(message = "Position is required")
-        @Size(min = 2, max = 50, message = "min is 2 characters and max is 50 caracters")
+        @Size(min = 2, max = 50, message = "min is 2 characters and max is 50 characters")
         String position,
 
         @NotNull(message = "department Id is required")

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -23,10 +24,10 @@ public class LeaveRequest {
     private UUID id;
 
     @Column(name = "start_date", nullable = false)
-    private java.sql.Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
-    private java.sql.Date endDate;
+    private LocalDate endDate;
 
     @Column(name = "reason", columnDefinition = "TEXT")
     private String reason;
@@ -37,4 +38,8 @@ public class LeaveRequest {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
+
+    public UUID getEmployee() {
+        return employee.getId();
+    }
 }
